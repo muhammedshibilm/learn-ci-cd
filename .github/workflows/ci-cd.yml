@@ -1,29 +1,20 @@
-name: CI Workflow
+name: Echo Message Example
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - main  # Triggers the workflow when code is pushed to the 'main' branch.
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  echo-message:
+    runs-on: ubuntu-latest  # Specifies the environment to run the job.
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Checks out your repository code.
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Run Tests
-        run: npm test
-        
+      - name: Print Echo Messages
+        run: |
+          echo "Hello, World!"
+          echo "Current Date and Time: $(date)"
+          echo "This workflow is running on branch ${{ github.ref }}"
