@@ -1,20 +1,38 @@
-name: Echo Message Example
+name: PR Workflow Example
 
 on:
-  push:
+  pull_request:
     branches:
-      - main  # Triggers the workflow when code is pushed to the 'main' branch.
+      - main  # Triggers when a PR targets the 'main' branch.
 
 jobs:
-  echo-message:
-    runs-on: ubuntu-latest  # Specifies the environment to run the job.
+  validate-pr:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3  # Checks out your repository code.
+        uses: actions/checkout@v3
 
       - name: Print Echo Messages
         run: |
-          echo "Hello, World!"
-          echo "Current Date and Time: $(date)"
-          echo "This workflow is running on branch ${{ github.ref }}"
+          echo "Running CI for Pull Request"
+          echo "Pull Request Number: ${{ github.event.number }}"
+          echo "Branch Name: ${{ github.head_ref }}"
+
+      - name: Run Tests (Example)
+        run: |
+          echo "Running tests..."
+          # Add your test commands here, e.g., npm test, pytest, etc.
+          echo "Tests passed successfully!"
+
+      - name: Approve and Merge PR (Optional)
+        if: success()  # Merge only if all previous steps succeed.
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              merge_method: 'squash'
+            })
